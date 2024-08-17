@@ -5,21 +5,16 @@ import { useEffect, useRef, useState } from 'react';
 const AudioCapture = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioStream, setAudioStream] = useState(null);
-  const audioContextRef = useRef(null);
-  const mediaStreamSourceRef = useRef(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [audioChunks, setAudioChunks] = useState([]);
-  const audioBlobRef = useRef(null);
   const [audioBlob, setAudioBlob] = useState(null);
+  const chunks = [];
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-
-    }
+    
   }, []);
+
   const startRecording = async () => {
     // Clear audio chunks before starting a new recording
-    // setAudioChunks([]);
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       console.error('getUserMedia is not supported by your browser');
       return;
@@ -27,18 +22,27 @@ const AudioCapture = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setAudioStream(stream);
-
-      // You can now process the audio stream here
+      
       const recorder = new MediaRecorder(stream);
-      setMediaRecorder(recorder);
-
+      
       recorder.ondataavailable = (event) => {
         if (event.data?.size > 0) {
-          setAudioChunks(prevChunks => [...prevChunks, event.data]);
+          chunks.push(event.data);
         }
       };
 
+      recorder.onstop = (event) => {
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setAudioBlob(audioBlob);
+
+        // upload to server when recording is stopped
+        
+        uploadAudio(audioBlob);
+      };
+      
       recorder.start();
+      setMediaRecorder(recorder);
       
       setIsRecording(true);
     } catch (error) {
@@ -52,26 +56,6 @@ const AudioCapture = () => {
       audioStream.getTracks().forEach(track => track.stop());
       setAudioStream(null);
       setIsRecording(false);
-
-      setAudioChunks(chunks => {
-        // Process the recorded audio data
-        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        console.log('Audio URL:', audioUrl);
-        
-        // Example: Upload to an API endpoint
-        // uploadAudio(audioBlob);
-        
-        // // Example: Download the audio
-        // downloadAudio(audioBlob);
-        
-        setAudioBlob(audioBlob);
-        return [...chunks];
-      });
-    }
-
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
     }
   };
 
@@ -80,7 +64,7 @@ const AudioCapture = () => {
       const url = URL.createObjectURL(audioBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'recording2.wav';
+      a.download = 'recording.wav';
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -88,7 +72,7 @@ const AudioCapture = () => {
 
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
-    formData.append('file', audioBlob, 'recording2.wav');
+    formData.append('file', audioBlob, 'recording.wav');
   
     try {
       const response = await fetch('/api/upload-audio', {
