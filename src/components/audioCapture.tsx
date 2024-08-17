@@ -8,7 +8,8 @@ const AudioCapture = () => {
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const chunks: any = [];
-
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    
     useEffect(() => {
 
     }, []);
@@ -23,34 +24,62 @@ const AudioCapture = () => {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             setAudioStream(stream);
 
-            const recorder = new MediaRecorder(stream);
+            const socket = new WebSocket('ws://localhost:8000/stream-audio');
+            
+            socket.onopen = () => {
+                console.log('WebSocket connection opened');
+                const recorder = new MediaRecorder(stream);
+                recorder.ondataavailable = (event) => {
+                    if (event.data?.size > 0) {
+                        chunks.push(event.data);
+                        // send audio chunks to server
+                        if (socket && socket.readyState === WebSocket.OPEN) {
+                            socket.send(event.data);
+                        }
+                    }
+                };
 
-            recorder.ondataavailable = (event) => {
-                if (event.data?.size > 0) {
-                    chunks.push(event.data);
-                }
+                recorder.onstop = (event) => {
+                    console.log('Recording stopped');
+                    const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    setAudioBlob(audioBlob);
+
+                    // Wait for all pending chunks to be sent before closing
+                    const interval = setInterval(() => {
+                        if (socket?.readyState === WebSocket.OPEN) {
+                            console.log('Closing WebSocket connection');
+                            socket.close();
+                            clearInterval(interval);  // Stop the interval
+                        }
+                    }, 100);  // Check every 100ms if all chunks are sent
+
+                    // upload to server when recording is stopped
+                    // uploadAudio(audioBlob);
+                };
+
+                recorder.start(100);// Adjust the interval to send data more frequently
+                // recorder.start();
+                setMediaRecorder(recorder);
             };
-
-            recorder.onstop = (event) => {
-                const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-                const audioUrl = URL.createObjectURL(audioBlob);
-                setAudioBlob(audioBlob);
-
-                // upload to server when recording is stopped
-
-                uploadAudio(audioBlob);
-            };
-
-            recorder.start();
-            setMediaRecorder(recorder);
 
             setIsRecording(true);
+            socket.onmessage = (event) => {console.log('Server says:', event.data)};  // Log the server's response
+            socket.onclose = () => {console.log('WebSocket connection closed');};
+            socket.onerror = (error) => {console.error('WebSocket error:', error);};
         } catch (error) {
             console.error('Error accessing microphone:', error);
         }
     };
 
     const stopRecording = () => {
+        // // Close the WebSocket connection if it's open or in the process of closing
+        // if (socket?.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) {
+        //     console.log('Closing WebSocket connection');
+        //     socket.close();
+        // } else {
+        //     console.log('WebSocket connection is already closed or closing');
+        // }
         if (mediaRecorder && mediaRecorder.state !== "inactive" && audioStream) {
             mediaRecorder.stop();
             audioStream.getTracks().forEach(track => track.stop());
