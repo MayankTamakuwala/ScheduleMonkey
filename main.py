@@ -170,7 +170,6 @@ async def websocket_endpoint(websocket: WebSocket):
             
             print(f"\nReceived audio data with MIME type: {mime_type}\n")
             
-            # Decode base64 data
             audio_bytes = base64.b64decode(base64_audio)
             print(f"\nDecoded audio data size: {len(audio_bytes)} bytes\n")
             
@@ -254,7 +253,6 @@ async def chat_with_llama(
         print("\nReturning cached response\n")
         return json.loads(cached_response)
     
-    # Flattening messages if they're nested
     messages = conversation.messages[0] if isinstance(conversation.messages[0], list) else conversation.messages
     prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     print(f"\nGenerated prompt: {prompt[:50]}...\n")
@@ -267,8 +265,7 @@ async def chat_with_llama(
             "conversation": messages + [assistant_message]
         }
         
-        # Cache the result
-        background_tasks.add_task(redis_client.setex, cache_key, 3600, json.dumps(result))  # Cache for 1 hour
+        background_tasks.add_task(redis_client.setex, cache_key, 3600, json.dumps(result))
         print("\nResponse cached\n")
         
         return result
