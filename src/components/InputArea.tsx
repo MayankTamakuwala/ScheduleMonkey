@@ -22,11 +22,11 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Type your message..."
-                className="flex-grow mr-2 p-2 border border-gray-300 rounded"
+                className="flex-grow mr-2 p-2 border border-gray-300 text-black rounded"
             />
             <button
                 onClick={handleSend}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+                className="bg-yellow-300 hover:bg-yellow-400 text-black px-4 py-2 rounded transition duration-200"
             >
                 Send
             </button>

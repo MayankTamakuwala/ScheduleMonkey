@@ -32,7 +32,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioRef, isPlaying, onVolume
                     step="0.1"
                     defaultValue="1"
                     onChange={onVolumeChange}
-                    className="mt-1 block w-full"
+                    className="mt-1 block w-full accent-yellow-900"
                 />
             </div>
         </div>
