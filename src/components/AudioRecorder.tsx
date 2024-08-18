@@ -29,40 +29,36 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudioRecorded }) => {
                 }
             });
 
-            updateDebugInfo('Microphone access granted');
+            // updateDebugInfo('Microphone access granted');
 
             let mimeType = 'audio/webm';
-            let options = {};
-
-            // Check for supported MIME types
-            if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-                mimeType = 'audio/webm;codecs=opus';
-            } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
-                mimeType = 'audio/ogg;codecs=opus';
+            if (MediaRecorder.isTypeSupported('audio/webm')) {
+                mimeType = 'audio/webm';
+            } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+                mimeType = 'audio/ogg; codecs=opus';
             } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
                 mimeType = 'audio/mp4';
             }
 
-            options = { mimeType };
-            mediaRecorderRef.current = new MediaRecorder(stream, options);
+            mediaRecorderRef.current = new MediaRecorder(stream, { mimeType });
             audioChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     audioChunksRef.current.push(event.data);
-                    updateDebugInfo(`Received audio chunk: ${event.data.size} bytes`);
+                    // updateDebugInfo(`Received audio chunk: ${event.data.size} bytes`);
                 }
             };
 
             mediaRecorderRef.current.onstop = () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+                const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
                 onAudioRecorded(audioBlob);
-                updateDebugInfo(`Recording stopped. Total size: ${audioBlob.size} bytes`);
+                // updateDebugInfo(`Recording stopped. Total size: ${audioBlob.size} bytes, Type: ${mimeType}`);
             };
 
             mediaRecorderRef.current.start(1000);
             setIsRecording(true);
-            updateDebugInfo('Recording started');
+            // updateDebugInfo(`Recording started with MIME type: ${mimeType}`);
 
             // Start the timer
             setRecordingDuration(0);
@@ -72,7 +68,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudioRecorded }) => {
 
         } catch (error) {
             console.error('Error starting recording:', error);
-            updateDebugInfo(`Error starting recording: ${error}`);
+            // updateDebugInfo(`Error starting recording: ${error}`);
         }
     }, [onAudioRecorded, updateDebugInfo]);
 
@@ -81,7 +77,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudioRecorded }) => {
             mediaRecorderRef.current.stop();
             mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
             setIsRecording(false);
-            updateDebugInfo('Recording stopped');
+            // updateDebugInfo('Recording stopped');
 
             // Clear the timer
             if (timerRef.current) {
@@ -104,8 +100,8 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudioRecorded }) => {
             <button
                 onClick={isRecording ? stopRecording : startRecording}
                 className={`w-full py-2 rounded ${isRecording
-                        ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                        : 'bg-green-500 hover:bg-green-600'
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                    : 'bg-green-500 hover:bg-green-600'
                     } text-white transition duration-200`}
             >
                 {isRecording ? `Stop Recording (${recordingDuration}s)` : 'Start Recording'}

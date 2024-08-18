@@ -1,105 +1,94 @@
-// File: hooks/useAudioPlayback.ts
-
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 export const useAudioPlayback = () => {
-	const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [audioDebugInfo, setAudioDebugInfo] = useState<string>("");
-	const audioRef = useRef<HTMLAudioElement>(null);
+	const audioContextRef = useRef<AudioContext | null>(null);
+	const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+	const audioBufferRef = useRef<AudioBuffer | null>(null);
 
-	const playAudio = useCallback((blob: Blob) => {
-		setAudioBlob(blob);
-		const audioUrl = URL.createObjectURL(blob);
+	const addDebugInfo = (info: string) => {
 		setAudioDebugInfo(
+			(prev) => `${prev}\n${new Date().toISOString()}: ${info}`
+		);
+		console.log(info);
+	};
+
+	useEffect(() => {
+		audioContextRef.current = new (window.AudioContext ||
+			(window as any).webkitAudioContext)();
+		return () => {
+			audioContextRef.current?.close();
+		};
+	}, []);
+
+	const playAudio = useCallback(async (blob: Blob) => {
+		addDebugInfo(
 			`Received audio Blob. Size: ${blob.size} bytes, Type: ${
 				blob.type || "not specified"
 			}`
 		);
 
-		if (audioRef.current) {
-			audioRef.current.src = audioUrl;
-			audioRef.current.onloadedmetadata = () => {
-				setAudioDebugInfo(
-					(prev) =>
-						`${prev}\nAudio duration: ${audioRef.current?.duration.toFixed(
-							2
-						)} seconds`
-				);
+		if (!audioContextRef.current) {
+			addDebugInfo("AudioContext not initialized");
+			return;
+		}
+
+		try {
+			const arrayBuffer = await blob.arrayBuffer();
+			audioBufferRef.current = await audioContextRef.current.decodeAudioData(
+				arrayBuffer
+			);
+
+			if (sourceNodeRef.current) {
+				sourceNodeRef.current.stop();
+				sourceNodeRef.current.disconnect();
+			}
+
+			sourceNodeRef.current = audioContextRef.current.createBufferSource();
+			sourceNodeRef.current.buffer = audioBufferRef.current;
+			sourceNodeRef.current.connect(audioContextRef.current.destination);
+
+			sourceNodeRef.current.start(0);
+			setIsPlaying(true);
+			addDebugInfo("Audio playback started");
+
+			sourceNodeRef.current.onended = () => {
+				setIsPlaying(false);
+				addDebugInfo("Audio playback ended");
 			};
-			audioRef.current
-				.play()
-				.then(() => {
-					setIsPlaying(true);
-					setAudioDebugInfo((prev) => `${prev}\nAudio playback started`);
-				})
-				.catch((e) => {
-					console.error("Error playing audio:", e);
-					setAudioDebugInfo(
-						(prev) => `${prev}\nError playing audio: ${e.message}`
-					);
-					// Attempt to play using Web Audio API
-					playAudioWithWebAudio(blob);
-				});
-		} else {
-			setAudioDebugInfo((prev) => `${prev}\nAudio element not found`);
+		} catch (error) {
+			addDebugInfo(`Error playing audio: ${error}`);
 		}
 	}, []);
 
-	const playAudioWithWebAudio = useCallback((blob: Blob) => {
-		const audioContext = new (window.AudioContext ||
-			(window as any).webkitAudioContext)();
-		const fileReader = new FileReader();
-
-		fileReader.onload = async (e) => {
-			try {
-				const arrayBuffer = e.target?.result as ArrayBuffer;
-				const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-				const source = audioContext.createBufferSource();
-				source.buffer = audioBuffer;
-				source.connect(audioContext.destination);
-				source.start(0);
-				setIsPlaying(true);
-				setAudioDebugInfo(
-					(prev) => `${prev}\nAudio playback started with Web Audio API`
-				);
-				source.onended = () => {
-					setIsPlaying(false);
-					setAudioDebugInfo((prev) => `${prev}\nAudio playback ended`);
-				};
-			} catch (error) {
-				console.error("Error playing audio with Web Audio API:", error);
-				setAudioDebugInfo(
-					(prev) => `${prev}\nError playing audio with Web Audio API: ${error}`
-				);
-			}
-		};
-
-		fileReader.onerror = (error) => {
-			console.error("Error reading file:", error);
-			setAudioDebugInfo((prev) => `${prev}\nError reading file: ${error}`);
-		};
-
-		fileReader.readAsArrayBuffer(blob);
+	const stopAudio = useCallback(() => {
+		if (sourceNodeRef.current) {
+			sourceNodeRef.current.stop();
+			sourceNodeRef.current.disconnect();
+			setIsPlaying(false);
+			addDebugInfo("Audio playback stopped");
+		}
 	}, []);
 
-	const handleVolumeChange = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const volume = parseFloat(e.target.value);
-			if (audioRef.current) {
-				audioRef.current.volume = volume;
-				setAudioDebugInfo((prev) => `${prev}\nVolume set to: ${volume}`);
+	const handleVolumeChange = useCallback((volume: number) => {
+		if (audioContextRef.current) {
+			const gainNode = audioContextRef.current.createGain();
+			gainNode.gain.setValueAtTime(volume, audioContextRef.current.currentTime);
+			if (sourceNodeRef.current) {
+				sourceNodeRef.current.disconnect();
+				sourceNodeRef.current.connect(gainNode);
+				gainNode.connect(audioContextRef.current.destination);
 			}
-		},
-		[]
-	);
+			addDebugInfo(`Volume set to: ${volume}`);
+		}
+	}, []);
 
 	return {
-		audioBlob,
 		isPlaying,
 		playAudio,
+		stopAudio,
 		audioDebugInfo,
-		audioRef,
 		handleVolumeChange,
 	};
 };
