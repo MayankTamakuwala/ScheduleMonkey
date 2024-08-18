@@ -8,7 +8,7 @@ const TranscriptionDisplay: React.FC<TranscriptionDisplayProps> = ({ transcripti
     if (!transcription) return null;
 
     return (
-        <div className="mb-4 p-4 bg-gray-100 rounded-lg">
+        <div className="mb-4 p-4 bg-gray-100 rounded-lg text-black">
             <h3 className="font-bold mb-2">Transcription:</h3>
             <p>{transcription}</p>
         </div>

@@ -37,6 +37,9 @@ next-env.d.ts
 
 # python
 venv
+stt/.venv
+tts/.venv
 
 #model
 Meta-Llama-3.1-8B-Instruct
+Meta-Llama-3.1-8B-Instruct.zip
