@@ -185,10 +185,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 })
                 print("\nTranscription sent to frontend\n")
                 
-                # Start background tasks for response generation and speech synthesis
-                background_tasks = BackgroundTasks()
-                background_tasks.add_task(process_and_respond, websocket, text)
-                print("\nBackground tasks added\n")
+                # Process and respond asynchronously
+                asyncio.create_task(process_and_respond(websocket, text))
+                print("\nAsynchronous task created for processing and responding\n")
                 
             except Exception as e:
                 print(f"\nError in audio processing: {str(e)}\n")
