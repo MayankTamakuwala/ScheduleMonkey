@@ -1,6 +1,6 @@
-<h1 style="text-align: center;">ScheduleMonkey</h1>
+<h1 align="center">ScheduleMonkey</h1>
 
-<h3 style="text-align: center;">A open-source, voice-based AI application for easily setting Google Calendar events!</h3>
+<h3 align="center">A open-source, voice-based AI application for easily setting Google Calendar events!</h3>
 
 <img src="./public/website_screenshot.png" />
 
