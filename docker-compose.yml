@@ -10,4 +10,4 @@ services:
       - NODE_ENV=production
     volumes:
       - .:/app  # Optional: If you want to mount the current directory, for development purposes
-    command: npm run dev  # Run the Next.js app in production mode
+    command: npm start  # Run the Next.js app in production mode
