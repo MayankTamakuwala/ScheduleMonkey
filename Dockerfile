@@ -13,7 +13,6 @@ RUN npm install
 # Copy specific files and directories into the container
 COPY next-env.d.ts .
 COPY next.config.mjs .
-COPY package.json .
 COPY package-lock.json .
 COPY postcss.config.mjs .
 COPY public/ ./public/
@@ -41,4 +40,4 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
