@@ -26,7 +26,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
             />
             <button
                 onClick={handleSend}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
+                className="bg-yellow-300 hover:bg-yellow-400 text-black px-4 py-2 rounded transition duration-200"
             >
                 Send
             </button>
