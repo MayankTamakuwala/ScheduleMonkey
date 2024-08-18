@@ -21,24 +21,25 @@ COPY tsconfig.json .
 
 RUN ls -al
 
-# Build the Next.js application
+# # Build the Next.js application
 RUN npm run build
 
-# Stage 2: Production image, copy built assets and serve them
-FROM node:22.4.1 AS production
+# # Stage 2: Production image, copy built assets and serve them
+# FROM node:22.4.1 AS production
 
-# Set the working directory inside the container
-WORKDIR /app
+# # Set the working directory inside the container
+# WORKDIR /app
 
-# Copy the build output and necessary files from the builder stage
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.mjs ./
-COPY --from=builder /app/node_modules ./node_modules
+# # Copy the build output and necessary files from the builder stage
+# COPY --from=builder /app/package*.json ./
+# COPY --from=builder /app/.next ./.next
+# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/next.config.mjs ./
+# COPY --from=builder /app/node_modules ./node_modules
 
 # Expose the port that Next.js will run on
 EXPOSE 3000
 
 # Start the Next.js application
+# CMD ["npm", "run", "dev"]
 CMD ["npm", "start"]
