@@ -41,6 +41,7 @@ During this hackathon, we targeted the Retell AI and Magical Toys tracks, which 
 
 - Vercel - for hosting our web application
 - Brev - for deploying our AI model
+- Docker - for containerizing our code
 
 ## Challenges we ran into
 
