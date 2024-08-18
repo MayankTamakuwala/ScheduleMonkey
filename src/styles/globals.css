@@ -25,6 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
   cursor: url(https://upload.wikimedia.org/wikipedia/commons/0/05/440-monkey.svg), auto;
+  background-image: url("../../public/monkey_wallpaper.jpg");;
 }
 
 @layer utilities {
