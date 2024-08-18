@@ -7,8 +7,8 @@ const Home: React.FC = () => {
     return (
         <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12">
             <Head>
-                <title>Schedule Monkey</title>
-                <link rel="icon" href="/favicon.ico" />
+                <title>ScheduleMonkey</title>
+                <link rel="icon" href="./monkey_cursor.svg" />
             </Head>
 
             <div className="relative py-3 sm:max-w-xl sm:mx-auto">
