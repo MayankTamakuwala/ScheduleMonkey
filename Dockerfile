@@ -11,14 +11,12 @@ COPY package*.json ./
 RUN npm install
 
 # Copy specific files and directories into the container
-COPY main.py .
 COPY next-env.d.ts .
 COPY next.config.mjs .
 COPY package.json .
 COPY package-lock.json .
 COPY postcss.config.mjs .
 COPY public/ ./public/
-COPY requirements.txt .
 COPY src/ ./src/
 COPY tailwind.config.ts .
 COPY tsconfig.json .
@@ -43,4 +41,4 @@ COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
