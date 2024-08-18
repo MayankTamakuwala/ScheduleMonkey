@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">ScheduleMonkey</h1>
 
-## Getting Started
+<h3 align="center">A open-source, voice-based AI application for easily setting Google Calendar events!</h3>
 
-First, run the development server:
+<img src="./public/website_screenshot.png" />
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Inspiration
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Every day, 500 million people across the world use Google Calendar to schedule their days. But unless you have a Google smart home device, it's impossible to set events using only your voice. While manually creating an event or task may not seem like much, adding multiple events per day to schedule school, work, and personal responsibilities can add up. We set out to fix this problem by creating a service that can automatically schedule Google Calendar events with just your voice.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it works
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+To use ScheduleMonkey, start a voice recording and ask our AI model to create an event, and list the details of the event. If you don't wish to use your voice, you can always default back to typing a message instead. Once you send a message, it's translated from speech to text using OpenAI's open-source Whisper model. Then, Meta's open-source Llama 3.1 understands the message, uses Google Calendar's API to create your desired event, and generates a text response to return to you. Finally, Tortoise (also open source!) translates that text back into speech for you to hear a confirmation of your calendar event.
 
-## Learn More
+## Tracks
 
-To learn more about Next.js, take a look at the following resources:
+During this hackathon, we targeted the Retell AI and Magical Toys tracks, which we identified sharing key similarities that we could combine into one project.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### Frontend
 
-## Deploy on Vercel
+- Next.js w/ React - for creating a dynamic web application
+- Typescript - for JavaScript type checking
+- Tailwind CSS - for a beautiful yet simple UI design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- FastAPI w/ Python - for server-side logic and API endpoints
+- Redis - for fast memory storage
+- Firebase - for authentication and to store user's actions with Firestore
+- Google Calendar API - for updating Google Calendar
+
+#### AI/ML
+
+- Whisper - for translating user speech into text (STT)
+- Llama 3.1 - for analyzing user responses, calling the Google Calendar API, and generating a confirmation response
+- Tortoise - for converting Llama's responses back into speech (TTS)
+
+#### Deployment
+
+- Vercel - for hosting our web application
+- Brev - for deploying our AI model
+- Docker - for containerizing our code
+
+## Challenges we ran into
+
+While building ScheduleMonkey, we ran into a number of challenges. The first challenge we encountered, which lasted for much of the hackathon, was properly configuring Tortoise to work, especially in conjunction with other aspects of our tech stack. We faced compatibility issues on all fronts, and tried many solutions before finally landing on one that worked with our entire stack. We also faced difficulty in downloading and training our AI model, since the computers we're working with aren't too powerful. Finally, we ran into issues with integrating different members' code together, but managed to push through using git and GitHub pull requests.
+
+## Future improvements
+
+In the future, we plan on expanding the reach of ScheduleMonkey beyond Google Calendar. We envision ScheduleMonkey being able to assist a wide array of secretary-like tasks, including sending emails, checking the weather, or controlling smart home devices. We know that the full potential of ScheduleMonkey is yet to be achieved!
