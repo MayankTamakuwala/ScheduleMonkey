@@ -8,6 +8,6 @@ services:
       - "3000:3000"  # Map port 3000 in the container to port 3000 on the host
     environment:
       - NODE_ENV=production
-    volumes:
-      - .:/app  # Optional: If you want to mount the current directory, for development purposes
+    # volumes:
+    #   - .:/app  # Optional: If you want to mount the current directory, for development purposes
     command: npm start  # Run the Next.js app in production mode

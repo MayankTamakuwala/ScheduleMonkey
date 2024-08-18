@@ -5,20 +5,21 @@ FROM node:22.4.1 AS builder
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the container
-COPY package*.json ./
+COPY package.json ./
+COPY package-lock.json .
 
 # Install dependencies
 RUN npm install
 
 # Copy specific files and directories into the container
-COPY next-env.d.ts .
 COPY next.config.mjs .
-COPY package-lock.json .
 COPY postcss.config.mjs .
 COPY public/ ./public/
 COPY src/ ./src/
 COPY tailwind.config.ts .
 COPY tsconfig.json .
+
+RUN ls -al
 
 # Build the Next.js application
 RUN npm run build
