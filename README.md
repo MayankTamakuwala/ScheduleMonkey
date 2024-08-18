@@ -45,7 +45,7 @@ During this hackathon, we targeted the Retell AI and Magical Toys tracks, which 
 
 ## Challenges we ran into
 
-While building ScheduleMonkey, we ran into a number of challenges. The first challenge we encountered, which lasted for much of the hackathon, was properly configuring Tortoise to work, especially in conjunction with other aspects of our tech stack. We faced compatibilty issues on all fronts, and tried many solutions before finally landing on one that worked with our entire stack. We also faced difficulty in downloading and training our AI model, since the computers we're working with aren't too powerful. Finally, we ran into issues with integrating different members' code together, but managed to push through using git and github's pull requests.
+While building ScheduleMonkey, we ran into a number of challenges. The first challenge we encountered, which lasted for much of the hackathon, was properly configuring Tortoise to work, especially in conjunction with other aspects of our tech stack. We faced compatibility issues on all fronts, and tried many solutions before finally landing on one that worked with our entire stack. We also faced difficulty in downloading and training our AI model, since the computers we're working with aren't too powerful. Finally, we ran into issues with integrating different members' code together, but managed to push through using git and github's pull requests.
 
 ## Future improvements
 
