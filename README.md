@@ -6,7 +6,9 @@
 
 ## Contact
 
-Charlie Weinberger: [LinkedIn]() | [GitHub](https://github.com/charlieweinberger)
+Check out our youtube demo video [here](https://www.youtube.com/watch?v=gCF-NO411No) and our slideshow [here](https://docs.google.com/presentation/d/1zg_igY2JP439R583_QpHy1S9cuj4I6Z9DNG0OctJnbM/edit?usp=sharing)! To contact us individually, visit our LinkedIn or GitHub profiles below.
+
+Charlie Weinberger: [LinkedIn](https://www.linkedin.com/in/charlie-weinberger/) | [GitHub](https://github.com/charlieweinberger)
 <br />
 Mayank Tamakuwala: [LinkedIn](https://www.linkedin.com/in/mayanktamakuwala/) | [GitHub](https://github.com/MayankTamakuwala)
 <br />
@@ -53,7 +55,7 @@ During this hackathon, we targeted the Retell AI and Magical Toys tracks, which 
 #### Deployment
 
 - Vercel - for hosting our web application
-- Brev - for deploying our AI model
+- Brev & AWS - for deploying our AI model
 - Docker - for containerizing our code
 
 ## Challenges we ran into
