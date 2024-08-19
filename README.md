@@ -4,6 +4,19 @@
 
 <img src="./public/website_screenshot.png" />
 
+## Contact
+
+Charlie Weinberger: [LinkedIn]() | [GitHub](https://github.com/charlieweinberger)
+<br />
+Mayank Tamakuwala: [LinkedIn](https://www.linkedin.com/in/mayanktamakuwala/) | [GitHub](https://github.com/MayankTamakuwala)
+<br />
+Michael Dang: [LinkedIn](https://www.linkedin.com/in/michael-v-dang/) | [GitHub](https://github.com/michaelvdang)
+<br />
+Byren Cheema: [LinkedIn](https://www.linkedin.com/in/byrencheema/) | [GitHub](https://github.com/byrencheema)
+<br />
+Berit Cheema: [LinkedIn](https://www.linkedin.com/in/berit-singh-cheema-851b10273/)
+<br />
+
 ## Inspiration
 
 Every day, 500 million people across the world use Google Calendar to schedule their days. But unless you have a Google smart home device, it's impossible to set events using only your voice. While manually creating an event or task may not seem like much, adding multiple events per day to schedule school, work, and personal responsibilities can add up. We set out to fix this problem by creating a service that can automatically schedule Google Calendar events with just your voice.
